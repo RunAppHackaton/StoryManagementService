@@ -1,10 +1,16 @@
 package com.runapp.storymanagementservice.controller;
 
+import com.runapp.storymanagementservice.dto.request.DeleteStorageRequest;
+import com.runapp.storymanagementservice.dto.request.StoryDeleteRequest;
+import com.runapp.storymanagementservice.dto.request.TaskDeleteRequest;
 import com.runapp.storymanagementservice.dto.request.TaskRequest;
+import com.runapp.storymanagementservice.dto.response.DeleteResponse;
+import com.runapp.storymanagementservice.feignClient.StorageServiceClient;
 import com.runapp.storymanagementservice.model.StoryModel;
 import com.runapp.storymanagementservice.model.TaskModel;
 import com.runapp.storymanagementservice.service.StoryService;
 import com.runapp.storymanagementservice.service.TaskService;
+import feign.FeignException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,9 +18,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +33,12 @@ import java.util.Optional;
 public class TaskController {
 
     private final TaskService taskService;
+
+    @Value("${storage-directory}")
+    private String storageDirectory;
+
+    @Autowired
+    private StorageServiceClient storageServiceClient;
     private final StoryService storyService;
 
     @Autowired
@@ -102,6 +116,49 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/upload-image")
+    @Operation(summary = "Upload an image for a task", description = "Upload an image file for a specific task by providing the file and task ID.")
+    @ApiResponse(responseCode = "200", description = "Image uploaded successfully", content = @Content(schema = @Schema(implementation = TaskModel.class), mediaType = "application/json"))
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Task not found")
+    public ResponseEntity<Object> uploadImage(
+            @Parameter(description = "Image file to upload", required = true) @RequestParam("file") MultipartFile file,
+            @Parameter(description = "ID of the task to associate with the uploaded image", required = true) @RequestParam("task_id") int taskId
+    ) {
+        Optional<TaskModel> optionalTaskModel = taskService.getTaskById(taskId);
+        if (optionalTaskModel.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task with id " + taskId + " not found");
+        } else {
+            TaskModel taskModel = optionalTaskModel.orElse(null);
+            taskModel.setTaskImageUrl(storageServiceClient.uploadFile(file, storageDirectory).getFile_uri());
+            taskService.updateTask(taskModel);
+            return ResponseEntity.ok().body(taskModel);
+        }
+    }
+
+    @DeleteMapping("/delete-image")
+    @Operation(summary = "Delete an image associated with a task", description = "Delete the image associated with a task by providing the image URI and task details.")
+    @ApiResponse(responseCode = "200", description = "Image deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Task not found")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<Object> deleteImage(@Parameter(description = "Request body containing task ID and image URI", required = true) @RequestBody TaskDeleteRequest taskDeleteRequest) {
+        Optional<TaskModel> optionalTaskModel = taskService.getTaskById(taskDeleteRequest.getTask_id());
+        if (optionalTaskModel.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task with id " + taskDeleteRequest.getTask_id() + " not found");
+        }
+        TaskModel taskModel = optionalTaskModel.orElse(null);
+        taskModel.setTaskImageUrl("DEFAULT");
+        taskService.updateTask(taskModel);
+        try {
+            storageServiceClient.deleteFile(new DeleteStorageRequest(taskDeleteRequest.getFile_uri(), storageDirectory));
+            // Обработка успешного удаления
+            return ResponseEntity.ok().build();
+        } catch (FeignException.InternalServerError e) {
+            // Обработка исключения, которое может возникнуть при вызове deleteFile
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new DeleteResponse("the image does not exist or the data was transferred incorrectly"));
         }
     }
 }

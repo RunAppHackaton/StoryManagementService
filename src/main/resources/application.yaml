@@ -38,5 +38,19 @@ spring:
       ddl-auto: create-drop
   application:
     name: story-manager-service
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2MB
+      max-file-size: 5MB
+      max-request-size: 6MB
+  cloud:
+    openfeign:
+      client:
+        config:
+          storage-service:
+            url: http://localhost:6500
+
+storage-directory: StoryManagementService/
 
 

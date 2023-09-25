@@ -13,8 +13,6 @@ public class TaskRequest {
 
     private int taskRewardId;
 
-    private String taskImageUrl;
-
     private int story_id;
 
     public TaskModel toTaskModel(StoryModel storyModel) {
@@ -22,7 +20,7 @@ public class TaskRequest {
         taskModel.setTaskTittle(this.taskTittle);
         taskModel.setTaskDescription(this.taskDescription);
         taskModel.setTaskRewardId(this.taskRewardId);
-        taskModel.setTaskImageUrl(this.taskImageUrl);
+        taskModel.setTaskImageUrl("DEFAULT");
         taskModel.setStoryModel(storyModel);
         return taskModel;
     }
