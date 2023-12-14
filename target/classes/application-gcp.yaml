@@ -42,7 +42,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
   application:
-    name: event-service
+    name: story-manager-service
   servlet:
     multipart:
       enabled: true
