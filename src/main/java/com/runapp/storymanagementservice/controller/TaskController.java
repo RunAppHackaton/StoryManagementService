@@ -1,6 +1,7 @@
 package com.runapp.storymanagementservice.controller;
 
 import com.runapp.storymanagementservice.dto.request.TaskRequest;
+import com.runapp.storymanagementservice.exceptions.NoEntityFoundException;
 import com.runapp.storymanagementservice.model.StoryModel;
 import com.runapp.storymanagementservice.model.TaskModel;
 import com.runapp.storymanagementservice.service.StoryService;
@@ -74,20 +75,19 @@ public class TaskController {
             @Parameter(description = "Updated task data", required = true)
             @PathVariable("taskId") int taskId,
             @RequestBody TaskRequest taskRequest) {
-        try {
-            Optional<TaskModel> task = taskService.getTaskById(taskId);
-            if (task.isEmpty())
-                return new ResponseEntity<>("task with id " + taskId + " not found", HttpStatus.NOT_FOUND);
-            Optional<StoryModel> storyModel = storyService.getStoryById(taskRequest.getStory_id());
-            if (storyModel.isEmpty())
-                return new ResponseEntity<>("story with id " + taskRequest.getStory_id() + " not found", HttpStatus.NOT_FOUND);
-            TaskModel taskModel = taskRequest.toTaskModel(storyModel.orElse(null));
-            taskModel.setId(taskId);
-            taskService.updateTask(taskModel);
-            return new ResponseEntity<>(task, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        TaskModel task = taskService.getTaskById(taskId).orElseThrow(()->new NoEntityFoundException("task with id " + taskId + " not found"));
+//        StoryModel storyModel = storyService.getStoryById(taskRequest.getStory_id()).orElseThrow(()->new NoEntityFoundException("story with id " + taskRequest.getStory_id() + " not found"));
+
+        Optional<TaskModel> task = taskService.getTaskById(taskId);
+        if (task.isEmpty())
+            return new ResponseEntity<>("task with id " + taskId + " not found", HttpStatus.NOT_FOUND);
+        Optional<StoryModel> storyModel = storyService.getStoryById(taskRequest.getStory_id());
+        if (storyModel.isEmpty())
+            return new ResponseEntity<>("story with id " + taskRequest.getStory_id() + " not found", HttpStatus.NOT_FOUND);
+        TaskModel taskModel = taskRequest.toTaskModel(storyModel.orElse(null));
+        taskModel.setId(taskId);
+        taskService.updateTask(taskModel);
+        return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
     @DeleteMapping("/{taskId}")
@@ -99,9 +99,9 @@ public class TaskController {
             @PathVariable int taskId) {
         try {
             taskService.deleteTask(taskId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
+        }catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

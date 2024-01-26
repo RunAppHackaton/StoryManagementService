@@ -2,6 +2,8 @@ package com.runapp.storymanagementservice.service;
 
 import com.runapp.storymanagementservice.model.StoryModel;
 import com.runapp.storymanagementservice.repository.StoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,23 +14,28 @@ import java.util.Optional;
 public class StoryService {
 
     private final StoryRepository storyRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoryService.class);
 
     @Autowired
     public StoryService(StoryRepository storyRepository) {
         this.storyRepository = storyRepository;
     }
     public StoryModel createStory(StoryModel story) {
+        LOGGER.info("Story add: {}", story);
         return storyRepository.save(story);
     }
 
     // Get all stories
     public List<StoryModel> getAllStories() {
+        LOGGER.info("Story get all");
         return storyRepository.findAll();
     }
     public Optional<StoryModel> getStoryById(int storyId) {
+        LOGGER.info("Story get by id: {}", storyId);
         return storyRepository.findById(storyId);
     }
     public StoryModel updateStory(StoryModel updatedStory) {
+        LOGGER.info("Story update: {}", updatedStory);
         int storyId = updatedStory.getId();
         // Check if the story with the given ID exists
         Optional<StoryModel> existingStory = storyRepository.findById(storyId);
@@ -42,6 +49,7 @@ public class StoryService {
         }
     }
     public void deleteStory(int storyId) {
+        LOGGER.info("Story delete by id: {}", storyId);
         // Check if the story with the given ID exists
         Optional<StoryModel> existingStory = storyRepository.findById(storyId);
         if (existingStory.isPresent()) {
