@@ -14,7 +14,7 @@ import java.util.Optional;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private static final Logger LOGGER = LoggerFactory.getLogger(StoryService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
 
     @Autowired
     public TaskService(TaskRepository taskRepository) {
