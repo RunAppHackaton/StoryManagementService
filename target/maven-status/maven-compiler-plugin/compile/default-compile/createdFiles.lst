@@ -10,4 +10,5 @@ com\runapp\storymanagementservice\model\TaskModel.class
 com\runapp\storymanagementservice\model\StoryModel.class
 com\runapp\storymanagementservice\dto\request\TaskRequest.class
 com\runapp\storymanagementservice\StoryManagementServiceApplication.class
+com\runapp\storymanagementservice\exceptions\EntityBadRequestException.class
 com\runapp\storymanagementservice\repository\StoryRepository.class

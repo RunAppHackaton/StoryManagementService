@@ -67,14 +67,10 @@ public class StoryController {
             @Parameter(description = "Updated story data", required = true)
             @PathVariable("storyId") int storyId,
             @RequestBody StoryRequest storyRequest) {
-        try {
-            StoryModel story = storyRequest.toStoryModel();
-            story.setId(storyId);
-            storyService.updateStory(story);
-            return new ResponseEntity<>(story, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        StoryModel story = storyRequest.toStoryModel();
+        story.setId(storyId);
+        storyService.updateStory(story);
+        return new ResponseEntity<>(story, HttpStatus.OK);
     }
 
     @DeleteMapping("/{storyId}")
@@ -84,11 +80,7 @@ public class StoryController {
     public ResponseEntity<Void> deleteStory(
             @Parameter(description = "Story ID", required = true)
             @PathVariable int storyId) {
-        try {
-            storyService.deleteStory(storyId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        storyService.deleteStory(storyId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

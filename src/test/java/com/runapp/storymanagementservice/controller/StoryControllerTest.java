@@ -2,6 +2,7 @@ package com.runapp.storymanagementservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.runapp.storymanagementservice.dto.request.StoryRequest;
+import com.runapp.storymanagementservice.exceptions.GlobalExceptionHandler;
 import com.runapp.storymanagementservice.model.StoryModel;
 import com.runapp.storymanagementservice.service.StoryService;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,9 @@ public class StoryControllerTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(storyController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(storyController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -140,11 +143,9 @@ public class StoryControllerTest {
 
     @Test
     public void testUpdateStoryNotFound() throws Exception {
-        // Prepare test data
         int storyId = 1;
 
         StoryRequest storyRequest = new StoryRequest();
-        // Set the properties of the storyRequest object
 
         // Mock the necessary dependencies
         when(storyService.updateStory(any(StoryModel.class))).thenThrow(new IllegalArgumentException());

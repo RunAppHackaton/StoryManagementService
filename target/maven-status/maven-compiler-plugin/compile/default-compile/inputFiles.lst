@@ -1,5 +1,6 @@
 D:\My Directory\Projects\JavaProjects\Practices\Run_App1\StoryManagementService\src\main\java\com\runapp\storymanagementservice\controller\TaskController.java
 D:\My Directory\Projects\JavaProjects\Practices\Run_App1\StoryManagementService\src\main\java\com\runapp\storymanagementservice\exceptions\GlobalExceptionHandler.java
+D:\My Directory\Projects\JavaProjects\Practices\Run_App1\StoryManagementService\src\main\java\com\runapp\storymanagementservice\exceptions\EntityBadRequestException.java
 D:\My Directory\Projects\JavaProjects\Practices\Run_App1\StoryManagementService\src\main\java\com\runapp\storymanagementservice\model\StoryModel.java
 D:\My Directory\Projects\JavaProjects\Practices\Run_App1\StoryManagementService\src\main\java\com\runapp\storymanagementservice\model\TaskModel.java
 D:\My Directory\Projects\JavaProjects\Practices\Run_App1\StoryManagementService\src\main\java\com\runapp\storymanagementservice\service\StoryService.java
