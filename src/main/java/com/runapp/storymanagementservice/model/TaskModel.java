@@ -18,8 +18,8 @@ public class TaskModel {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "task_tittle")
-    private String taskTittle;
+    @Column(name = "task_title")
+    private String taskTitle;
 
     @Column(name = "task_description")
     private String taskDescription;
@@ -30,7 +30,9 @@ public class TaskModel {
     @Column(name = "task_image_url")
     private String taskImageUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "story_id")
-    private StoryModel storyModel;
+    @ManyToMany
+    @JoinTable(name = "Task_Story",
+                joinColumns = @JoinColumn(name = "task_id"),
+                inverseJoinColumns = @JoinColumn(name = "story_id"))
+    private List<StoryModel> storyModels;
 }

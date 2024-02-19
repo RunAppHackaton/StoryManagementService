@@ -33,7 +33,6 @@ public class StoryModel {
     @Column(name = "story_image_url")
     private String storyImageUrl;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "storyModel")
-    private List<TaskModel> taskModelList;
+    @ManyToMany
+    private List<TaskModel> taskModels;
 }

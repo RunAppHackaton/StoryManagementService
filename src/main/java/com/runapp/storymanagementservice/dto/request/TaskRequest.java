@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class TaskRequest {
 
-    private String taskTittle;
+    private String taskTitle;
 
     private String taskDescription;
 
@@ -19,11 +19,10 @@ public class TaskRequest {
 
     public TaskModel toTaskModel(StoryModel storyModel) {
         TaskModel taskModel = new TaskModel();
-        taskModel.setTaskTittle(this.taskTittle);
+        taskModel.setTaskTitle(this.taskTitle);
         taskModel.setTaskDescription(this.taskDescription);
         taskModel.setTaskRewardId(this.taskRewardId);
         taskModel.setTaskImageUrl(this.taskImageUrl);
-        taskModel.setStoryModel(storyModel);
         return taskModel;
     }
 }
