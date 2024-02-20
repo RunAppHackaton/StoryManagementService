@@ -1,2 +1,4 @@
+com\runapp\storymanagementservice\service\StoryServiceTest.class
 com\runapp\storymanagementservice\controller\TaskControllerTest.class
 com\runapp\storymanagementservice\controller\StoryControllerTest.class
+com\runapp\storymanagementservice\service\TaskServiceTest.class
