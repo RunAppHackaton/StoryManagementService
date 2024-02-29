@@ -31,6 +31,7 @@ public class TaskModel implements Serializable {
     @Column(name = "task_image_url")
     private String taskImageUrl;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "Task_Story",
                 joinColumns = @JoinColumn(name = "task_id"),
